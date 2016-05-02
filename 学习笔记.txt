@@ -1,0 +1,38 @@
+npm 如何设置镜像站
+
+ 
+由于 npm官方站总是抽风, 安装时下载速度很慢甚至连接不上, 怎么办呢? 
+我们可以切换到npm的镜像站点, 方法有二 
+
+1.npm install 时临时指定镜像源: 
+$ npm install --registry http://registry.cnpmjs.org express #从中国镜像安装express 
+
+2.永久设置: 
+$ npm config set registry http://registry.cnpmjs.org  #设置为中国镜像 
+然后照常使用 
+npm install express 即可 
+
+
+目前已知的npm 镜像源站点: 
+中国镜像站:	http://registry.cnpmjs.org 
+官方站: http://registry.npmjs.org 
+各国镜像: 
+https://registry.nodejitsu.com  美国 
+https://npm.strongloop.com	美国 
+http://registry.npmjs.org.au	澳大利亚 
+http://registry.npmjs.eu	德国 
+
+一大堆镜像站介绍: http://blog.modulus.io/npm-mirrors
+
+
+$ mkdir lesson2 && cd lesson2
+$ npm init
+OK，这时会要求我们输入一些信息，乱填就好了，反正这个地方也不用填依赖关系。
+
+npm init 这个命令的作用就是帮我们互动式地生成一份最简单的 package.json 文件，init 是 initialize 的意思，初始化。
+
+当乱填信息完毕之后，我们的目录下就会有个 package.json 文件了。
+
+这时我们来安装依赖，这次的应用，我们依赖 express 和 utility 两个模块。
+
+$ npm install express utility --save

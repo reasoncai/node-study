@@ -1,0 +1,747 @@
+1，输入ifconfig后没有eth0信息的，找不到IP的，可以试试输入 ifup eth0 (就是打开网卡)，然后再输入ifconfig,然后打开xshell按照视频中的一步一步的来。
+
+2,输入vi /etc/sysconfig/network-scripts/ifcfg-eth0的时候注意vi后面的空格
+
+（1）命令基本格式
+[root@localhost ~]#
+其中：
+root ： 当前登录用户
+localhost ： 主机名
+~ ： 当前所在目录（家目录）
+# ： 超级用户的提示符
+$ : 普通用户的提示符
+
+（2）命令格式
+命令 [选项] [参数]
+注意：个别命令使用不遵循此格式
+当有多个选项时，可以写在一起
+简化选项与完整选项
+-a等于 --all
+
+1）查询目录中内容 ：ls
+选项：
+-a 显示所有文件，包括隐藏文件
+-l 显示详细信息
+-d 查看目录属性
+-h 人性化显示文件大小
+-i 显示inode
+
+2）-rw-r--r--
+文件类型：- 文件 d 目录 l 软连接文件
+rw-	：u所有者
+r-- ：g所属组
+r-- ：o其他人
+r 读 w 写 x 执行
+
+1）目录处理命令
+->建立目录 ： mkdir 
+· mkdir -p [目录名]
+-p 递归创建
+命令英文原意 ： make directory
+
+->切换所在的目录 ：cd
+· cd [目录]
+命令英文原意 ： change directory
+
+· 简化操作
+cd ~	进入当前用户的家目录
+cd	进入当前用户的家目录
+cd -	进入上次目录
+cd .. 进入上一级目录
+cd . 进入当前目录
+· 相对路径 ： 参照当前所在目录，进行查找
+如： [root@imoc ~]# cd ../usr/local/src/
+
+· 绝对路径 ：从根目录开始指定，一级一级递归查找。在任何目录下，都能进入指定位置
+如： [root@imoc ~]# cd /etc/
+->查询所在目录位置 ：pwd
+命令英文原意 ：print working director
+
+9.6
+-> 删除空目录 ：rmdir
+· rmdir [目录名]
+命令英文原意 ： remove empty directories
+
+-> 删除文件或目录 ：rm
+rm -rf [文件或目录]
+命令英文原意 ：remove
+选项：
+-r 删除目录
+-f 强制
+
+
+-> 复制命令 ：cp
+cp [选项] [原文件或目录] [目标目录]
+命令英文原意 ： copy
+
+选项：
+-r	复制目录
+-p	连带文件属性复制
+-d	若源文件是链接文件，则复制链接属性
+-a	相当于 -pdr 
+
+-> 剪切或改名命令 ：mv
+mv [原文件或目录] [目标目录]
+命令英文原意 : move
+
+· / 根目录
+· /bin 命令保存目录（普通用户就可以读取的命令）
+· /boot 启动目录，启动相关文件
+· /dev 设备文件保存目录
+· /etc 配置文件保存目录
+· /home 普通用户的家目录
+· /lib 系统库保存目录
+· /mnt 系统挂载目录
+· /media 挂载目录
+· /root 超级用户的家目录
+· /tmp	临时目录
+· /sbin 命令保存目录（超级用户才能使用）
+· /proc 直接写入内存的
+· /sys
+· /usr 系统软件资源目录
+· /var	系统相关文档内容
+
+根目录下的 bin 和 sbin ，usr 目录下的 bin 和 sbin ，这四个目录都是用来保存系统命令；
+其中，bin 普通用户就可以执行，sbin 只有超级用户可以执行。
+proc 和sys 目录不能直接操作，这两个目录保存的是内存的过载点。
+可以在家目录 root 或 home ，以及 tmp 目录下随便放内容。
+
+【media】、【mnt】和【misc】是系统为我们准备的三个空目录，用于存储外接存储设备的盘符，三个目录用哪个都行，【misc】通常放老式磁带机，【media】通常放光驱，【mnt】通常放usb设备。一般常用【mnt】放所有的设备，包括usb、光驱等，因为【mnt】在老式linux中就存在（另外两个目录在老式linux中是没有的）
+
+ln 链接命令
+-s 创建软链接
+分为硬链接和软链接
+硬链接：一个文件两个不同的进入，相当于一个教室两个门，从哪个门进都进到同一个教室
+硬链接特征：
+1、拥有相同的i节点和相同的存储block快，可以看做是同一个文件
+2、可通过i节点识别
+3、不能跨分区
+4、不能针对目录使用
+5、删除文件，硬链接正常使用
+
+软链接特征：
+1、类似windows快捷方式
+2、软链接拥有自己的i节点和block快，但是数据块中只保存原文件的文件名和i节点号，并没有实际的文件数据
+3、lrwxrwxrwx l软链接,软链接文件权限都为rwxrwxrwx,但具体看原文件的权限
+4、修改任意文件，另一个都改变
+5、删除原文件，软链接不能使用
+6、创建软链接源文件一定要写绝对路径
+
+1、locate 文件名
+1-1）在后台数据库中按文件名搜索，搜索速度更快
+1-2）对于新建的文件，由于数据库没有更新，使用locate 不能查到。可以使用 updatedb强制更新数据库后即可查到。
+1-3）可使用 locate locate 搜索locate相关文件，可看到locate数据库。 
+1-4）在不同linux中，该数据库名字稍微不同，例如，locatedb、slocate、mlocate。
+
+2、/var/lib/mlocate (保存的搜索数据库)
+2-1）#locate 命令所搜索的后台数据库
+2-2）数据库不是实时的，更新频率大概一天更新一次
+
+3、updatedb
+3-1）更新数据库
+
+4、缺点：只能按照文件名进行搜索，但常用。
+
+5、配置文件
+5-1）touch /root/cangls
+touch /tmp/cangls
+updatedb
+locate cangls
+显示为 /root/cangls 只有一条，而/tmp下的cangls没有显示出来，原因在于locate搜索遵循配置文件 /etc/updatedb.conf, 在PRUNEPATHS 中配置了/tmp/目录不进行搜索。所以没有进行查找。
+5-2）/etc/updatedb.conf 配置文件
+5-2-1）PRUNE_BIND_MOUNTS = "yes"
+#开启搜索限制，yes为后面三项都生效。no为 后面三项都不生效
+5-2-2）PRUNEFS = 
+#搜索时，不搜索的文件系统
+5-2-3）PRUNENAMES =
+#搜索时，不搜索的文件类型
+5-2-4）PRUNEPATHS =
+#搜索时，不搜索的路径
+
+whereis 命令名
+[root@localhost ~]# whereis -b ls 系统命令位置
+[root@localhost ~]# whereis -m ls 系统命令帮助文档
+which 除了搜索命令位置，还能显示命令的别名（如果有命令的别名）
+cd命令是linux的shell的内置命令（linux操作系统与用户交互必须的命令）
+cd是shell自带的
+whereis和which都是外部安装的
+whereis和which搜索命令的路径依赖path定义的路径
+
+1、find [搜索范围] [搜索条件]
+#搜索文件
+2、find / -name install.log
+#避免大范围搜索，会非常耗费系统资源
+#find 是在系统当中搜索符合条件的文件名。如果需要匹配，使用通配符匹配，通配符是完全匹配。
+
+文件搜索命令find
+
+1、find [搜索范围] [搜索条件]
+#搜索文件
+2、find / -name install.log
+#避免大范围搜索，会非常耗费系统资源
+#find 是在系统当中搜索符合条件的文件名。如果需要匹配，使用通配符匹配，通配符是完全匹配。
+
+Linux中的通配符
+* 匹配任意内容
+? 匹配任意一个字符
+[] 匹配任意一个中括号内的字符
+find /root -name "ab[cd]" 将会搜索出abc 和abd 
+
+find /root -iname install.log #不区分大小写
+find /root -user root #按照所有者搜索
+find /root -nouser #查找没有所有者的文件
+
+find /var/log -mtime +10
+#查找10天前修改的文件
+
+-10 10天内修改文件
+10 10天当天修改的文件
++10 10天前修改的文件
+
+atime 文件访问时间
+ctime 改变文件属性
+mtime 修改文件内容
+
+find . -size 25k
+#查找文件大小是25k的文件
+find . -size -25k 
+#查找当前目录下小于25k的文件
+find . -size +25k
+#查找当前文件目录下大于25k的文件
+
+find . -inum 262422
+#查找i节点是262422的文件
+
+find /etc -size +20k -a -size -50k
+#查找/etc/目录下，大于20KB并且小于50KB的文件
+-a and 逻辑与，两个条件都满足
+-o or 逻辑或，两个条件满足一个即可
+
+find /etc -size +20k -a -size -50k -exec ls -lh {}\;
+#查找/etc/目录下，大于20KB并且小于50KB的文件，并显示详细信息
+#-exec/-ok 命令 {}\; 对搜索结果执行操作
+
+grep命令
+-i 忽略大小写
+-v 排除指定字符串
+grep "size" anaconda-ks.cfg
+grep -v "size" anaconda-ks.cfg
+
+grep 与find的区别：find搜索符合条件的文件名，如果需要匹配，使用通配符匹配，通配符是完全匹配；grep在文件当中搜索符合条件的字符串，如果需要匹配，使用正则表达式进行匹配，正则表达式是包含匹配
+
+man 命令 查看命令的帮助手册，在结果中可以输入命令进行检索，利用n向下、shift向上翻。
+man -f 查看命令的拥有的帮助级别（1·9），相当于whatis
+whereis用于查看命令所在位置
+apropos 关键字：查找包含有该关键字的帮助级别。等同于man -k
+
+man,--help,help,info总共四种获取帮助的命令。
+1. 命令 --help 获取选项帮助
+例如：ls --help
+
+2.help shell内部命令
+例如:whereis可以用来判断一个命令是否是shell内部命令,ls在/bin/下面有可执行文件
+说明ls命令不是shell内部命令，cd命令在/bin/下面没有相应的可执行文件，所以是shell
+自带的命令.
+
+3.info 命令
+
+info里面内容十分繁琐，是关于命令的一个巨大的帮助文档，里面有各个版本对于此命令
+的说明。
+-回车：进入带*号的说明
+-u: 进入上层页面
+-n: 进入下一个帮助小节
+-p: 进入上一个帮助小节
+-q: 退出
+
+.zip格式压缩（在window下和linux下是可以互通的）
+1、zip 压缩文件名 源文件 
+#压缩文件
+
+2、zip -r 压缩文件名 源目录
+#压缩目录
+
+3、unzip 压缩文件
+#解压缩.zip文件
+
+.gz格式压缩
+
+1、gzip 源文件
+#压缩为.gz格式的压缩文件，源文件会消失
+
+2、gzip -c 源文件 > 压缩文件
+#压缩为.gz格式，源文件保留
+例如： gzip -c cangls > cangls.gz
+
+3、gzip -r 目录
+#压缩目录下所有的子文件，但是不能压缩目录
+
+4、gzip -d 压缩文件
+#解压缩文件
+
+5、gunzip 压缩文件
+#解压缩文件
+
+6、gunzip -r 压缩文件夹
+#解压缩文件夹
+
+.bz2格式压缩
+
+1、bzip2 源文件 
+#压缩为.bz2格式，不保留源文件
+
+2、bzip2 -k 源文件
+#压缩之后保留源文件
+
+*注意：bzip2命令不能压缩目录
+
+3、bzip2 -d 压缩文件
+#解压缩，-k保留压缩文件
+
+4、bunzip2 压缩文件
+#解压缩，-k保留压缩文件
+
+打包命令tar
+1、tar -cvf 打包文件名 源文件
+选项：
+-c :打包
+-v :显示过程
+-f :指定打包后的文件名
+例如：
+tar -cvf longzls.tar longzls
+
+解打包命令
+2、tar -xvf 打包文件名
+选项：
+-x :解打包
+例如：
+tar -xvf longzls.tar
+
+其实.tar.gz格式是先打包为.tar格式，再压缩为.gz格式
+3、tar -zcvf 压缩包名.tar.gz 源文件
+选项 ：
+-z: 压缩为.tar.gz格式
+
+4、tar -zxvf 压缩包名.tar.gz
+选项：
+-x:解压缩.tar.gz格式
+例如：
+tar -zcvf /tmp/test.tar.gz jp jvm.log #将jp文件件和jvm.log文件一起压缩打包到tmp目录下的test.tar.gz下
+
+tar -ztvf test.tar.gz #-t 仅仅查看压缩文件，不真正的解压
+
+5、tar -jcvf 压缩包名.tar.bz2 源文件
+选项：
+-z :压缩为.tar.bz2格式
+
+6、tar -jxvf 压缩包名.tar.bz2
+选项：
+-x :解压缩.tar.bz2格式
+例如：
+tar -jxvf jp.tar.bz2 -C /tmp/ 将jp.tar.bz2解压到指定目录 /tmp/下
+-t 只查看不解打包文件
+tar -ztvf tartest.tar.gz
+查看压缩文件的内容
+
+shutdown [选项] 时间
+-h 关机 -r 重启 -c 取消全一个关机命令 shutdown -r now #立马重启
+halt poweroff inti 0 也都可以关机 但不安全
+reboot init 6 也可以重启
+runlevel查看运行级别 前级别 当前级别
+logout退出当前用户，也就是注销
+shutdown命令:
+【shutdown -h 05:30】 设定凌晨05:30关机
+【shutdown -h now】 立即关机
+【shutdown -r 05:30】 设定凌晨05:30重启
+【shutdown -r now】 立即重启
+【shutdown -c】 取消前一个关机或重启命令
+注：
+1、以上定时关机或重启命令执行后，计算机就会卡在那里，当前用户和其他登录的用户都将无法操作，直到关机或重启。这个时候，如果当前用户按【ctrl+c】可以取消本次关机或重启的操作，而其他用户如果按【ctrl+c】的话，则不会取消关机或重启操作，但可以退出中断，继续进行其他操作。
+2、如果想要关机命令后台运行的话，可以在命令后面输入&，例如：【shutdown -h 05:30 &】，这样当前用户和其他登录用户的前台就不会中断了（若中断的话，按一下回车即可）；
+3、任何时候，不管哪个用户输入【shutdown -c】命令都可以取消关机或重启操作。
+4、后面的时间可以使用【+m】格式，表示多少分钟后执行。也可以使用【hh:mm】格式，表示指定的时间执行，该时间是24小时制的；
+5、若远程登录的话，最后不要执行关机命令，因为开机需要到机房开机才行。重启也尽量少执行，若必须运行，则应关闭正在运行的服务；
+
+挂载命令
+mount
+#查看系统中已经挂载的设备
+mount -a
+#根据配置文件 /etc/fstab (自动挂载)
+#如果将光驱和U盘写入文件 光驱内没有光盘,U盘没有插入系统 启动就会不成功
+
+mount [-t 文件系统] [-o 特殊选项] 设备文件名 挂载点
+-t 文件系统:加入文件系统来指定挂载的类型 ext3 ext4 iso9660(光盘)等文件系统
+-o 特殊选项:可以指定挂载的额外选项
+exec/noexec 是否可以执行可执行文件 默认允许
+remount 重新挂载已经挂载的文件系统 一般用于指定修改特殊权限
+默认已经挂载好的分区 可以省略 设备文件名
+
+挂载光盘
+mkdir /mnt/cdrom
+#建立挂载点
+mount [-t iso9660] /dev/sr0 /mnt/cdrom
+#挂载光盘 将设备文件挂载到盘符
+#默认读写权限,光盘不可写 提示权限被迫改变
+
+卸载光盘
+#必须卸载才可取出光盘
+umount 设备文件名或挂载点
+#umount /mnt/cdrom/
+
+挂载U盘
+fdisk -l
+#查看设备文件名
+mount -t vfat /dev/sdb1 /mnt/usb/
+#vfat (fat32)文件系统 Linux默认是不支持NTFS文件系统
+
+w 查看系统当前信息（负载和开机时间等信息），当前已经登录的用户以及从什么终端进入。load average:x x x 表示系统在1分钟内 5分钟内 15分钟内的平均负载(CPU内存)
+who 与w类似，但是看到的信息更少
+last 查看系统中所有用户的登录信息
+lastlog 查看所有用户的最后一次登录时间
+
+1、echo输出命令和脚本执行
+
+格式：echo [选项] [输出内容]
+选项： -e：支持反斜线控制的字符转换
+echo "bols he cangls ni xihuan nayige"
+\a - 输出警告音
+\b - 退格符
+\n - 换行符
+\r - 回车键
+\t - 制表符，也就是tab键
+\v - 垂直制表符
+\0nnn - 按照八进制ASCII码输出字符
+\xhh - 按照十六进制ASCII表输出字符
+echo -e "bols he cangls ni\b xihuan nayige"
+echo -e "hell\bo"
+echo -e "h\te\tl\nl\to\t"
+echo -e "\x68\t\x65\t\x6c\n\x6c\t\x6f"
+echo -e "\e[1;31m嫁人就要嫁凤姐\e[0m"
+#输出颜色 \e[1;##m - 开启颜色显示； \e[0m - 关闭颜色显示
+#30m=黑色，31m=红色，32m=绿色，33m=黄色
+#34m=蓝色，35m=洋红，36m=青色，37m=白色
+
+2、脚本执行：
+方法1：赋予执行权限，直接运行
+chmod 755 hello.sh
+./hello.sh（或者绝对路径执行 /root/hello.sh）
+方法2：通过Bash调用执行脚本
+bash hello.sh
+二、
+#！/bin/Bash
+不是注释，它标称下面的内容是linux的标准脚本程序
+如果该脚本使用纯shell语句完成，不加#！/bin/Bash，运行没问题
+但，脚本调用了其他语言，就会报错
+
+1、可以通过alias ls='ls --color=never'设置新的别名
+alias查看别名，前门为别名，后面为全名
+
+一般是重启，重登录之后，就失效！
+如果要长久有效，需要配置文件，配置好
+
+vim比vi功能更强大，可以通过设置 alias vi='vim'的别名来调用，但是重启重登录之后失效
+
+2、将别名写入配置文件：
+vi ~/.bashrc #写入配置文件 永久生效
+~是指每个用户的目录，每个用户的目录不一样，配置文件不一样，生成的效果也不一样
+写完之后，source .bashrc	
+
+unalias 别名 #删除别名
+
+3、命令生效的顺序
+
+第一顺位：执行命令用绝对路径或者相对路径执行的命令
+第二顺位：执行别名命令
+第三顺位：执行Bash内部命令
+第四顺位：按照$PATH环境变量定义的目录查找的顺序第一的命令
+
+4、快捷键
+Ctrl c 强制终止 
+Ctrl l 清屏 
+Ctrl u 删除到行首 
+Ctrl a 光标移动到行首 
+Ctrl e 移动到行尾 
+Ctrl z 把命令放到后台 （没有终止，仅仅是放入后台执行）
+Ctrl r 在历史记录中搜索
+
+history 历史命令
+history [选项] [历史命令保存文件]
+-c 清空历史命令
+-w 把缓存中的历史命令写入历史命令保存文件 ~/.bash_history
+#默认保存1000条
+HISTSIZE=1000
+#vi /etc/profile 环境变量配置文件
+
+基本调用
+上下箭头来重复调用
+!n 来执行第n条历史命令
+!! 重复执行上一条命令
+!字符串 重复执行后一个该串开头的命令
+
+Tab键
+进行命令(环境变量)和目录补全(操作路径)
+
+输出重定向
+(显示电脑处理的结果)
+标准输入输出
+键盘	/dev/stdin	0	标准输入
+显示器	/dev/stdout	1	标准输出
+显示器	/dev/stderr	2	标准错误输入
+
+输出重定向
+标准输出重定向
+命令 > 文件
+以覆盖的方式,把命令的正确输出输出到指定的文件或设备当中.
+命令 >> 文件
+以追加的方式
+
+标准错误输出重定向
+错误命令 2>文件
+以覆盖的方式,把命令的错误输出输出到指定的文件或设备当中.
+错误命令 2>>文件
+以追加的方式
+
+正确输出和错误输出同时保存
+命令 > 文件 2>&1
+命令 &> 文件
+以覆盖的方式,把正确的输出和错误输出都保存到一个文件当中
+命令 >> 文件 2>&1
+命令 &>> 文件
+以追加的方式
+ls &> /dev/null (回收站)
+命令 >> 文件1 2>> 文件2
+正确的追加到文件1,错误的追加到文件2 
+
+输入重定向
+wc [选项] [文件名]
+-c 统计字节数
+-w 统计单词数
+-l 统计行数
+ctrl+d 中断统计
+
+命令 < 文件
+#把文件作为命令的输入
+命令 << 标识符
+#标识符其中的内容作为该命令执行的内容
+
+";"连接命令 顺序执行
+"&&"连接命令 逻辑与执行 第一条执行 第二条执行 第一条错误 第二条不执行
+"||"连接命令 逻辑或执行 第一条执行 第二条不执行 第一条错误 第二条执行
+脚本中的应用：命令 && echo yes || echo no 命令正确yes 错误no
+注意&& echo yes || echo no 顺序不能颠倒，不然命令出错的时候会同时输出no yes
+
+more [文件名] "分页显示文件内容"
+
+"|" 管道符 命令1|命令2 命令1正确的结果 作为命令2的操作对象
+例如 ls -l > /etc/ | more “用于分页显示命令执行结果”
+netstat -an | grep ESTABLISHED | wc -l "用于查看当前连接本机的客户端 并 统计客户端数量"
+
+通配符
+? 匹配一个任意字符
+* 0个或任意多个
+[]	匹配中括号内其中一个字符
+[-]	-代表一个范围 [a-z]代表匹配一个字母
+[^]	逻辑非 表示匹配不上中括号内的一个字符 [^0-9]代表匹配一个不是数字的字符
+
+其他特殊符号
+
+''	特殊符号都没有特殊意义,原样输出	
+""	$ ` \ 都具有特殊意义
+``	包含系统命令 执行后赋值给变量 等同于 $()
+$	用于调用变量的值 (变量名=变量值)
+#	shell脚本中,#开头的行代表注释
+\	转义符 跟在\之后的特殊符号失去意义,变为普通字符
+
+vim
+命令行模式：:q! 退出文件
+vim + abc 定位到abc文件的最后一行
+vim + 行数 abc 定位到abc文件的第X行
+vim + /eddy abc 定位到abc文件中第一次出现eddy的行中 （按n能够切换到下个出现的地方）
+vim aa bb cc 打开aa，bb，cc 这3个文件 （:n 进入下一个文件，:N或:prev 进入上一个文件）
+
+RPM安装
+rpm -ivh 包全名
+选项：
+-i(install) 安装
+-v(verbose) 显示细节
+-h(hash) 显示进度
+--nodeps 不检测依赖性
+
+RPM命令管理：RPM包卸载
+RPM包安装的时候，都是安装在了默认的位置（这个位置都是包的作者定的），所以位置不统一，比较混乱。因此，RPM提供了卸载命令，卸载时只需要提供包名即可，不用关心安装在了什么地方。（若安装的是源码包，就没这些问题，只要把软件包目录删掉即可）
+1、所有已安装的rpm包都保存在【/var/lib/rpm/】目录下的__db.00n数据库中，如下所示：
+[root@CentOS6 Packages]# ls /var/lib/rpm/*db*
+/var/lib/rpm/__db.001 /var/lib/rpm/__db.002 /var/lib/rpm/__db.003 /var/lib/rpm/__db.004
+2、我们在任何目录都可以输入卸载命令执行卸载操作，卸载的时候，不需要打包全名，只要打上包名即可（linux会自动去上面的数据库中查找），另外，卸载的时候也有依赖问题，和安装的时候顺序相反。例如：
+[root@CentOS6 ~]# rpm -e httpd
+error: Failed dependencies:
+httpd = 2.2.15-29.el6.centos is needed by (installed) httpd-manual-2.2.15-29.el6.centos.noarch
+[root@CentOS6 ~]# rpm -e httpd-manual
+[root@CentOS6 ~]# rpm -e httpd
+[root@CentOS6 ~]# rpm -q httpd
+package httpd is not installed
+注：卸载时，【--nodeps】这个选项在实际工作当中是不允许使用的。
+
+1.查询是否安装：rpm -q 包名 （查询包是否安装，query） rpm -qa (查询所有已经安装的rpm包，all) 
+2.查询软件包详细信息：rpm -qi 包名 （查询软件信息，information） rpm -qip 包名 （查询未安装包信息，package）
+3. 查询包中文件安装位置：rpm -ql 包名 （l , list，列表） rpm -qlp 包名 （查询未安装包信息，package）
+4.查询系统文件属于哪个RPM包：rpm -qf 系统文件名 （查询系统文件属于哪个软件包，file）
+5.查询软件包的依赖性：rpm -qR 包名 （-R 查询软件包的依赖性 ，requires ） rpm -qRp 包名 （-p 查询未安装包信息 ，package）
+
+RPM命令管理：RPM包校验
+[root@CentOS6 ~]# rpm -ql httpd-tools
+/usr/bin/ab
+/usr/bin/htdbm
+/usr/bin/htdigest
+/usr/bin/htpasswd
+/usr/bin/logresolve
+/usr/share/doc/httpd-tools-2.2.15
+/usr/share/doc/httpd-tools-2.2.15/LICENSE
+/usr/share/man/man1/ab.1.gz
+/usr/share/man/man1/htdbm.1.gz
+/usr/share/man/man1/htdigest.1.gz
+/usr/share/man/man1/htpasswd.1.gz
+/usr/share/man/man1/logresolve.1.gz
+[root@CentOS6 ~]# vi /usr/share/doc/httpd-tools-2.2.15/LICENSE 
+[root@CentOS6 ~]# rpm -V httpd-tools
+S.5....T. d /usr/share/doc/httpd-tools-2.2.15/LICENSE
+上面输出内容的格式为：SM5DLUGT 文件类型 文件名
+其中: 
+1、【S : 表示文件大小;M : 表示文件类型或权限（rwx）;5 : 表示文件MD5检查和;D : 表示设备主从代码;L : 表示文件路径;U : 表示文件属主（所有者）;G : 表示文件属组;T : 表示文件修改时间。】若这8项有一项发生变化，则显示出对应的字母，若无变化，则用【.】表示。
+2、当前发生变化的文件类型：c:配置文件（config file）；d:普通文档（documentation）；g：“鬼”文件（ghost file）很少见，就是该文件不应该被这个rpm包包含；L：授权文件（license file）；r：描述文件（read me）。
+上面输出表示：普通文档【/usr/share/doc/httpd-tools-2.2.15/LICENSE】的文件大小、校验和及修改时间与rpm包中的原始文件相比发生了变化。
+
+RPM命令管理：RPM包中文件提取
+rpm2cpio 包全名 | cpio -idv .文件绝对路径 --> 前面的【.】代表当前路径，不能省略。【文件绝对路径】和包里文件的绝对路径对应，也就是告诉了cpio要去包里提取哪个文件。
+注：cpio只知道提取文件，并不知道要从什么地方提取文件，因此我们通常要使用【|】管道符或【<】输入重定向告诉cpio我们应该从什么设备去取出文件。
+使用输入重定向的cpio命令格式：
+cpio 选项 < [文件|设备]
+选项：
+-i：copy-in模式，还原
+-d：还原时自动新建目录
+-v：显示还原过程
+下面是模拟ls命令被误删，然后从rpm包中恢复的过程：
+[root@CentOS6 ~]# mv /bin/ls /tmp/ 　　-->误删ls命令
+[root@CentOS6 ~]# ls　　-->ls命令失效
+-bash: /bin/ls: 没有那个文件或目录
+[root@CentOS6 ~]# rpm -qf /bin/ls 　　-->查询ls命令所在的rpm包
+coreutils-8.4-31.el6.i686
+[root@CentOS6 ~]# rpm2cpio /mnt/cdrom/Packages/coreutils-8.4-31.el6.i686.rpm | cpio -idv ./bin/ls 　　-->通过rpm2cpio命令将rpm包转换成cpio格式文件，然后通过cpio命令将前面文件中的指定文件提取到当前目录下（其中的【.】表示提取到当前目录，【.】后面是文件在包中的绝对路径，cpio根据这个绝对路径来找到要提取的文件。）
+./bin/ls
+24819 块
+[root@CentOS6 ~]# dir 　　-->先使用dir命令查看当前目录，发现【bin】目录已经提取出来了，里面包含了ls命令文件
+bin install.log install.log.syslog
+[root@CentOS6 ~]# cp ./bin/ls /bin/ls 　　-->将该ls命令复制到/bin/目录下，这样ls就恢复回来了
+[root@CentOS6 ~]# ls
+bin install.log install.log.syslog
+[root@CentOS6 ~]#
+
+Yum在线安装：yum源文件
+1、yum的优点：将所有软件包放到官方服务器上，当进行yum在线安装时，可以自动解决依赖性问题。（rpm缺点：安装过程中，rpm包依赖性太强）
+2、redhat的yum在线安装需要付费，centOS不需要。
+3、在【/etc/yum.repos.d/】目录中，默认有4个yum源文件，其中【CentOS-Base.repo】是基本yum源文件，如果我们能上网，那它是默认生效的，而其他的都是默认不生效的。
+4、[base]：名字可以随便起。
+5、name：名字也是随便起。
+6、mirrorlist和baseurl一个是主站点，一个是辅助站点，这两个有一个就行。可以找一个163或清华大学的yum源更换。
+7、enabled：默认最后一个容器不生效，其他容器都生效。
+8、gpgcheck：一般都要开启，开启后安装时会验证rpm包是否是官方的，以保证系统安全。
+9、gpgkey：默认系统安装后，在目录【/etc/pki/rpm-gpg】下都会存在数字证书。注：前面的【file://】表示文件协议，后面的【/etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6】是数字证书的位置。
+
+光盘搭建yum源：
+1.挂载光盘：
+>mkdir /mnt/cdrom --建立挂载点
+>mount /dev/cdrom /mnt/cdrom/ --挂载光盘
+2.使网络yum源失效：
+>cd /etc/yum.repos.d/ --进入yum源目录
+>mv CentOS-Base.repo CentOS-Base.repo.bak --修改yum源文件后缀名，使其失效
+3.使光盘yum源生效：
+>vim CentOS-Media.repo
+
+常用yum命令：
+1.查询
+>yun list --查询所有可用软件包列表
+>yum search 关键字 --搜索服务器上所有和关键字相关的包
+2.安装
+>yum -y install 包名 (-y 自动回答yes)
+yum安装只写包名即可！ eg:yum -y install gcc --c语言编译器
+
+1、升级 yum -y update 包名 （尽量少升级）
+//2、 yum -y update 会升级linux 所有程序 包括内核
+3、卸载 yum -y remove 尽量不用yum 卸载
+组管理 
+1、yum grouplist
+2、yum groupinstall
+3、yum groupremove
+
+源码包和RPM包的区别：4、安装位置不同带来的影响
+1、源码包是不能使用【service】命令来启动服务，因为源码包的安装位置由用户指定，放在哪并不统一。而rpm包安装后，通常都是放在【/etc/rc.d/init.d】目录中的，而【service】命令执行时，会自动搜索该目录，所以rpm包安装的服务可以使用【service】命令。
+2、综上所述，安装位置不同，启动方法是有区别的。
+3、使用绝对路径启动程序的方法是通用的，通常软件包中会写上启动程序的方法的。
+4、如果将源码包安装后的启动程序复制到【/etc/rc.d/init.d】目录中，则也是可以使用【service】命令执行的
+
+源码包安装：1、安装准备 
+1、由于源码都是c语言写的，所以要先安装c语言编译器：gcc
+2、从官方网站下载源码包，若是下载到了windows上面，可以使用winSCP传到linux上。
+注：若已安装了二进制包，则源码包也是可以继续安装的，因为两者安装目录不一样。但是，并不建议这样做，因为端口会冲突。
+rpm -qa |grep 程序名
+查询安装过的
+
+源码包安装：3、源码包安装过程（源码包的安装过程和安装顺序是固定的）
+下面以安装apache2为例，解压缩后的目录为【httpd-2.2.31】：
+1、安装时必须进入到解压缩后的目录【httpd-2.2.31】中；
+2、执行【./configure】命令，该命令用于软件配置与检查（基本上每个源码包都会有该命令，即使个别的没有该命令，也会提供相关替代命令），它有以下几点功能：
+a、定义需要的功能选项；
+b、检测系统环境是否符合安装要求；
+c、把a中定义好的功能选项和b中检测系统环境的信息都写入Makefile文件，用于后续的编辑。（后续的【make】和【make install】命令都会依赖该文件）
+执行命令【./configure --prefix=/usr/local/apache2】，该命令用于指定安装位置为：【/usr/local/apache2】（其中的【apache2】目录不需要提前创建，【make install】命令执行时会自动创建）。
+命令执行后，会在当前目录生成Makefile文件。
+3、执行【make】命令，编译源码（这一步通常比较耗时）；
+4、执行【make install】命令，安装程序，此时会创建【/usr/local/apache2】目录。
+注：
+如果命令执行过程中发生终止，并且出现error、warn或no提示，则表明出错，否则，一切正常。
+若执行【./configure】或【make】命令时出现错误，是不需要删除【/usr/local/apache2】目录的，因为程序还没有真正安装。只需要执行【make clean】命令即可，该命令用于清除缓存、临时文件等，使安装环境恢复到未安装状态。
+若执行【make install】命令时报错，则需要删除【/usr/local/apache2】目录，并且执行【make clean】命令才行。
+
+源码包安装：3、源码包安装过程（源码包的安装过程和安装顺序是固定的）
+5、启动程序：通常程序的安装包中的INSTALL文件会有程序的安装与启动的说明，apache2压缩包中的INSTALL文件中就有如下内容：
+　　$ ./configure --prefix=PREFIX　　　　-->配置（其中的PREFIX表示安装目录）
+　　$ make　　　　　　　　　　　　　　　　-->编译
+　　$ make install　　　　　　　　　　　　-->安装
+　　$ PREFIX/bin/apachectl start　　　　-->启动
+因此，启动apache2的方法为：（若之前rpm安装的apache2已启动的话，需要先关闭，否则端口80会冲突的）
+[root@CentOS6 httpd-2.2.31]# /usr/local/apache2/bin/apachectl start
+httpd: Could not reliably determine the server's fully qualified domain name, using CentOS6.5min for ServerName
+启动成功后，在浏览其中输入对应的IP地址，会显示：It works！，表示安装成功。
+若未出现，则可能是防火墙未关，关闭方法如下：
+[root@CentOS6 httpd-2.2.31]# service iptables stop
+iptables：将链设置为政策 ACCEPT：filter [确定]
+iptables：清除防火墙规则： [确定]
+iptables：正在卸载模块： [确定]
+注：
+源码包安装后的apache2的默认首页为【/usr/local/apache2/htdocs/index.html】。
+而rpm包安装后的apache2的默认首页为【/var/www/html/index.html】，当该文件不存在时，会自动跳转到【/var/www/error/noindex.html】页面。
+
+脚本安装包：准备工作
+1、本节以安装LNMP1.0（http://lnmp.org/download.html）为例，所以需要先停止之前安装的apache和mysql服务（最好也将源码包安装的apache【/usr/local/apache2】删除）
+2、保证yum源正常：可以使用【yum list】命令测试。（若是光盘yum源，记得挂载光盘）
+3、关闭SELinux和防火墙：
+a、永久关闭SELinux的方法：编辑文件【/etc/selinux/config】，将【SELINUX=enforcing】改为【SELINUX=disabled】，然后重启系统即可。
+b、永久关闭防火墙的方法：【chkconfig iptables off】，开启为：【chkconfig iptables on】；临时关闭防火墙的方法：【service iptables stop】，开启为：【service iptables start】。
+4、脚本安装过程中，会将系统中已有的apache、mysql、php等卸载掉。下面是安装脚本【centOS.sh】的部分内容：
+......部分内容省略......
+yum install -y ntp
+ntpdate -u pool.ntp.org
+date
+
+rpm -qa|grep httpd
+rpm -e httpd
+rpm -qa|grep mysql
+rpm -e mysql
+rpm -qa|grep php
+rpm -e php
+
+yum -y remove httpd*
+yum -y remove php*
+yum -y remove mysql-server mysql
+yum -y remove php-mysql
+......部分内容省略......
+注：安装后，如果安装卡在了【php-fpm】那里，通常表示已安装成功，只是【php-fpm】那里卡住了（物理机少见，但虚拟机比较常见），解决的方法就是：使用命令【pkill -9 php-fpm】杀掉【php-fpm】进程，然后重新启动该进程【/etc/rc.d/init.d/php-fpm start】即可。
